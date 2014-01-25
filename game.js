@@ -556,15 +556,33 @@ var Field = function(width, height) {
     }
 }
 
-function prettyPrompt(questionText) {
-    var el       = document.getElementById.bind(document),
-        alertBox = el('alert-box'),
-        question = el('alert-box-question'),
-        input    = el('alert-box-input'),
-        okButton = el('alert-box-ok-button')
+function hideElem(elem) {
+    elem.style.display = "none";
+}
 
-    alertBox.style.display = 'block'
+function showElem(elem, display) {
+    if (display == null) { display = "inline" }
+    elem.style.display = display
+}
+
+function prettyPrompt(questionText, nextAction) {
+    var el       = document.getElementById.bind(document),
+        alertBox = el('prompt-box'),
+        question = el('prompt-box-question'),
+        input    = el('prompt-box-input'),
+        okButton = el('prompt-box-ok-button')
+
+    showElem(alertBox)
     question.innerHTML = questionText
+
+    okButton.onclick = function() {
+        hideElem(alertBox)
+        question.innerHTML = ""
+        var val = input.value
+        input.value = ""
+
+        nextAction(val)
+    }
 }
 
 window.onload = function() {
@@ -591,16 +609,12 @@ window.onload = function() {
     // set click handler for game starting button
     document.getElementById('new-game').onclick = function() {
         if (this.game === undefined || this.game.deleted) {
-            var players = prettyPrompt("how many players?"),
-                tanks = prettyPrompt("how many tanks each?")
-
-            if ([players, tanks].some(function(x) { isNaN(x) })) {
-                alert("you have to put integers in, silly!")
-                return
-            }
-
-            window.game = new Game(players, tanks)
-            window.game.start()
+            prettyPrompt("how many players?", function(players) {
+                prettyPrompt("how many tanks each?", function(tanks) {
+                    window.game = new Game(players, tanks)
+                    window.game.start()
+                })
+            })
         }
     }
 }

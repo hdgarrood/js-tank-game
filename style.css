@@ -2,7 +2,7 @@ canvas {
     border: dotted;
 }
 
-#alert-box {
+.popup {
     position: fixed;
     top: 180px;
     left: 180px;
