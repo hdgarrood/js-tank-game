@@ -556,6 +556,17 @@ var Field = function(width, height) {
     }
 }
 
+function prettyPrompt(questionText) {
+    var el       = document.getElementById.bind(document),
+        alertBox = el('alert-box'),
+        question = el('alert-box-question'),
+        input    = el('alert-box-input'),
+        okButton = el('alert-box-ok-button')
+
+    alertBox.style.display = 'block'
+    question.innerHTML = questionText
+}
+
 window.onload = function() {
     var loadImage = function(src) {
             var img = new Image()
@@ -580,8 +591,8 @@ window.onload = function() {
     // set click handler for game starting button
     document.getElementById('new-game').onclick = function() {
         if (this.game === undefined || this.game.deleted) {
-            var players = +prompt("how many players?"),
-                tanks = +prompt("how many tanks each?")
+            var players = prettyPrompt("how many players?"),
+                tanks = prettyPrompt("how many tanks each?")
 
             if ([players, tanks].some(function(x) { isNaN(x) })) {
                 alert("you have to put integers in, silly!")

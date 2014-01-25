@@ -1,11 +1,17 @@
+<!doctype html>
 <html>
     <head>
         <script type="text/javascript" src="requestAnimationFrame-polyfill.js"></script>
         <script type="text/javascript" src="game.js"></script>
         <link rel="stylesheet" type="text/css" href="style.css">
+        <meta charset="utf-8">
     </head>
     <body>
-        <div id="alert-box"></div>
+        <div id="alert-box">
+            <p id="alert-box-question">hello there!</p>
+            <input id="alert-box-input" type="text"></input>
+            <button id="alert-box-ok-button">OK</button>
+        </div>
         <button id="new-game">New Game</button>
         <br>
         <canvas id="canvas" width="640" height="480"></canvas>

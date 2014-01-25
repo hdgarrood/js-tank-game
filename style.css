@@ -1,3 +1,14 @@
 canvas {
     border: dotted;
 }
+
+#alert-box {
+    position: fixed;
+    top: 180px;
+    left: 180px;
+    background: #f44;
+    color: #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    display: none;
+}
