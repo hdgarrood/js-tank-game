@@ -12,3 +12,9 @@ canvas {
     padding: 10px;
     display: none;
 }
+
+.error {
+    display: none;
+    border-radius: 2px;
+    border: dotted #ff4;
+}

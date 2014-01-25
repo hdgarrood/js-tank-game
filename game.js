@@ -561,16 +561,29 @@ function hideElem(elem) {
 }
 
 function showElem(elem, display) {
-    if (display == null) { display = "inline" }
+    if (display == null) { display = "block" }
     elem.style.display = display
 }
 
-function prettyPrompt(questionText, validator, nextAction) {
-    var el       = document.getElementById.bind(document),
-        alertBox = el('prompt-box'),
-        question = el('prompt-box-question'),
-        input    = el('prompt-box-input'),
+var el = document.getElementById.bind(document)
+
+function initPrompts() {
+    var input    = el('prompt-box-input'),
         okButton = el('prompt-box-ok-button')
+
+    input.addEventListener('keyup', function(ev) {
+        if (ev.keyCode === 13) {
+            okButton.click()
+        }
+    })
+}
+
+function prettyPrompt(questionText, validator, nextAction) {
+    var alertBox        = el('prompt-box'),
+        question        = el('prompt-box-question'),
+        input           = el('prompt-box-input'),
+        okButton        = el('prompt-box-ok-button'),
+        validationError = el('prompt-box-validation-error')
 
     if (validator == null) {
         validator = function(val) { return { valid: true, value: val } }
@@ -579,7 +592,9 @@ function prettyPrompt(questionText, validator, nextAction) {
     showElem(alertBox)
     question.innerHTML = questionText
 
+
     okButton.onclick = function() {
+        hideElem(validationError)
         var val = input.value
         res = validator(val)
 
@@ -589,13 +604,15 @@ function prettyPrompt(questionText, validator, nextAction) {
             input.value = ""
             nextAction(res.value)
         } else {
-            alert(res.message)
+            showElem(validationError)
+            validationError.innerHTML = res.message
         }
-
     }
 }
 
 window.onload = function() {
+    initPrompts()
+
     var loadImage = function(src) {
             var img = new Image()
             img.src = src
@@ -636,15 +653,39 @@ window.onload = function() {
         }
     }
 
+    var validateTanks = function(tanksText) {
+        var tanks = parseInt(tanksText)
+        if (isNaN(tanks)) {
+            return {
+                valid: false,
+                message: "Please enter a number."
+            }
+        }
+        if (tanks < 1) {
+            return {
+                valid: false,
+                message: "There must be at least one tank per player"
+            }
+        }
+        return {
+            valid: true,
+            value: tanks
+        }
+    }
+
     // set click handler for game starting button
     document.getElementById('new-game').onclick = function() {
         if (this.game === undefined || this.game.deleted) {
-            prettyPrompt("How many players? Enter at least 2.", validatePlayers, function(players) {
-                prettyPrompt("how many tanks each?", null, function(tanks) {
-                    window.game = new Game(players, tanks)
-                    window.game.start()
-                })
-            })
+            prettyPrompt("How many players? Enter at least 2.",
+                    validatePlayers,
+                    function(players) {
+                        prettyPrompt("how many tanks each?",
+                            validateTanks,
+                            function(tanks) {
+                                window.game = new Game(players, tanks)
+                                window.game.start()
+                            })
+                    })
         }
     }
 }
