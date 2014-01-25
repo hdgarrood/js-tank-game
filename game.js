@@ -565,23 +565,33 @@ function showElem(elem, display) {
     elem.style.display = display
 }
 
-function prettyPrompt(questionText, nextAction) {
+function prettyPrompt(questionText, validator, nextAction) {
     var el       = document.getElementById.bind(document),
         alertBox = el('prompt-box'),
         question = el('prompt-box-question'),
         input    = el('prompt-box-input'),
         okButton = el('prompt-box-ok-button')
 
+    if (validator == null) {
+        validator = function(val) { return { valid: true, value: val } }
+    }
+
     showElem(alertBox)
     question.innerHTML = questionText
 
     okButton.onclick = function() {
-        hideElem(alertBox)
-        question.innerHTML = ""
         var val = input.value
-        input.value = ""
+        res = validator(val)
 
-        nextAction(val)
+        if (res.valid === true) {
+            hideElem(alertBox)
+            question.innerHTML = ""
+            input.value = ""
+            nextAction(res.value)
+        } else {
+            alert(res.message)
+        }
+
     }
 }
 
@@ -606,11 +616,31 @@ window.onload = function() {
         downArrow: loadImage('down-arrow.png')
     }
 
+    var validatePlayers = function(playersText) {
+        var players = parseInt(playersText)
+        if (isNaN(players)) {
+            return {
+                valid: false,
+                message: "Please enter a number."
+            }
+        }
+        if (players < 2) {
+            return {
+                valid: false,
+                message: "There must be at least two players."
+            }
+        }
+        return {
+            valid: true,
+            value: players
+        }
+    }
+
     // set click handler for game starting button
     document.getElementById('new-game').onclick = function() {
         if (this.game === undefined || this.game.deleted) {
-            prettyPrompt("how many players?", function(players) {
-                prettyPrompt("how many tanks each?", function(tanks) {
+            prettyPrompt("How many players? Enter at least 2.", validatePlayers, function(players) {
+                prettyPrompt("how many tanks each?", null, function(tanks) {
                     window.game = new Game(players, tanks)
                     window.game.start()
                 })
