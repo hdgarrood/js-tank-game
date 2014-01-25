@@ -604,10 +604,18 @@ function prettyPrompt(questionText, validator, nextAction) {
             input.value = ""
             nextAction(res.value)
         } else {
+            wobble(promptBox)
             showElem(validationError)
             validationError.innerHTML = res.message
         }
     }
+}
+
+function wobble(elem) {
+    elem.classList.add('wobbling')
+    setTimeout(function() {
+        elem.classList.remove('wobbling')
+    }, 500)
 }
 
 function prettyAlert(messageText, nextAction) {

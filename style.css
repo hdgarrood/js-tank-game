@@ -18,3 +18,25 @@ canvas {
     border: solid 1px #ff2;
     display: none;
 }
+
+.wobbling {
+    animation: wobble 0.1s infinite;
+}
+
+@keyframes wobble {
+    0% {
+        transform: translate3d(0px, 0px, 0px);
+    }
+    25% {
+        transform: translate3d(10px, 0px, 0px);
+    }
+    50% {
+        transform: translate3d(0px, 0px, 0px);
+    }
+    75% {
+        transform: translate3d(-10px, 0px, 0px);
+    }
+    100% {
+        transform: translate3d(0px, 0px, 0px);
+    }
+}
