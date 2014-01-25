@@ -15,6 +15,6 @@ canvas {
 
 .error {
     display: none;
-    border-radius: 2px;
-    border: dotted #ff4;
+    border-radius: 4px;
+    border: solid 1px #ff2;
 }

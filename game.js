@@ -591,7 +591,7 @@ function prettyPrompt(questionText, validator, nextAction) {
 
     showElem(alertBox)
     question.innerHTML = questionText
-
+    input.focus()
 
     okButton.onclick = function() {
         hideElem(validationError)
