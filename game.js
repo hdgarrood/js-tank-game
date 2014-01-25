@@ -1,16 +1,14 @@
 var DOWN = 0,
     UP = 1
 
-var Button = function(id) {
-    this.state = UP
-    this.element = document.getElementById(id)
+function makeButton(id) {
+    var button = { state: UP, element: document.getElementById(id) },
+        onMouseDown = function() { button.state = DOWN },
+        onMouseUp =   function() { button.state = UP   }
 
-    var me = this,
-        onMouseDown = function() { me.state = DOWN },
-        onMouseUp =   function() { me.state = UP   }
-
-    this.element.addEventListener('mousedown', onMouseDown)
-    this.element.addEventListener('mouseup',   onMouseUp)
+    button.element.addEventListener('mousedown', onMouseDown)
+    button.element.addEventListener('mouseup',   onMouseUp)
+    return button
 };
 
 var playerColours = ['red', 'blue', 'green', 'orange', 'purple', 'black']
@@ -567,11 +565,11 @@ window.onload = function() {
 
     // load buttons
     this.Buttons = {
-        moveLeft: new Button('move-left'),
-        moveRight: new Button('move-right'),
-        aimLeft: new Button('aim-left'),
-        aimRight: new Button('aim-right'),
-        fire: new Button('fire')
+        moveLeft: makeButton('move-left'),
+        moveRight: makeButton('move-right'),
+        aimLeft: makeButton('aim-left'),
+        aimRight: makeButton('aim-right'),
+        fire: makeButton('fire')
     }
 
     // load images
