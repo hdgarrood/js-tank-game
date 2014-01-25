@@ -2,7 +2,7 @@ var DOWN = 0,
     UP = 1
 
 function makeButton(id) {
-    var button = { state: UP, element: document.getElementById(id) },
+    var button = { state: UP, element: el(id) },
         onMouseDown = function() { button.state = DOWN },
         onMouseUp =   function() { button.state = UP   }
 
@@ -24,7 +24,7 @@ var Game = function(players, tanksPerPlayer) {
     this.tanksPerPlayer = tanksPerPlayer
     this.height = 480
     this.width = 640
-    this.canvas = document.getElementById('canvas')
+    this.canvas = el('canvas')
     this.deleted = false
 
     var field = new Field(this.width, this.height),
@@ -453,7 +453,7 @@ var Field = function(width, height) {
         while (remainingPlayers.indexOf(candidatePlayer) === -1) {
             candidatePlayer = (candidatePlayer + 1) % this.players
             if (candidatePlayer === initialPlayer) {
-                alert("no players available...")
+                throw new Error("BUG: no players available")
             }
         }
         return candidatePlayer
@@ -480,7 +480,7 @@ var Field = function(width, height) {
         if (this.tanks[nextTankId]) {
             this.currentTankId = nextTankId
         } else {
-            alert("error: nextTankId is " +
+            throw new Error("BUG: nextTankId is " +
                     nextTankId + ", no tank with that id exists")
         }
     }
@@ -495,7 +495,7 @@ var Field = function(width, height) {
 
         // if all tanks have been destroyed, end the game
         if (remainingTanks.length === 0) {
-            alert("Nobody wins. Such is war...")
+            prettyAlert("Nobody wins. Such is war...")
             return true
         }
 
@@ -506,7 +506,7 @@ var Field = function(width, height) {
 
         // if all the remaining tanks belong to the same player, end the game
         if (remainingTanks.every(belongsToFirst)) {
-            alert("The " + playerColours[firstPlayer] + " player wins!")
+            prettyAlert("The " + playerColours[firstPlayer] + " player wins!")
             return true
         }
         return false
@@ -579,7 +579,7 @@ function initPrompts() {
 }
 
 function prettyPrompt(questionText, validator, nextAction) {
-    var alertBox        = el('prompt-box'),
+    var promptBox       = el('prompt-box'),
         question        = el('prompt-box-question'),
         input           = el('prompt-box-input'),
         okButton        = el('prompt-box-ok-button'),
@@ -589,7 +589,7 @@ function prettyPrompt(questionText, validator, nextAction) {
         validator = function(val) { return { valid: true, value: val } }
     }
 
-    showElem(alertBox)
+    showElem(promptBox)
     question.innerHTML = questionText
     input.focus()
 
@@ -599,7 +599,7 @@ function prettyPrompt(questionText, validator, nextAction) {
         res = validator(val)
 
         if (res.valid === true) {
-            hideElem(alertBox)
+            hideElem(promptBox)
             question.innerHTML = ""
             input.value = ""
             nextAction(res.value)
@@ -607,6 +607,22 @@ function prettyPrompt(questionText, validator, nextAction) {
             showElem(validationError)
             validationError.innerHTML = res.message
         }
+    }
+}
+
+function prettyAlert(messageText, nextAction) {
+    var alertBox = el('alert-box')
+        message  = el('alert-box-message')
+        okButton = el('alert-box-ok-button')
+
+    showElem(alertBox)
+    message.innerHTML = messageText
+    okButton.focus()
+
+    okButton.onclick = function() {
+        hideElem(alertBox)
+        message.innerHTML = ""
+        nextAction()
     }
 }
 
@@ -674,7 +690,7 @@ window.onload = function() {
     }
 
     // set click handler for game starting button
-    document.getElementById('new-game').onclick = function() {
+    el('new-game').onclick = function() {
         if (this.game === undefined || this.game.deleted) {
             prettyPrompt("How many players? Enter at least 2.",
                     validatePlayers,
