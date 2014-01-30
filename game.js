@@ -619,8 +619,8 @@ function wobble(elem) {
 }
 
 function prettyAlert(messageText, nextAction) {
-    var alertBox = el('alert-box')
-        message  = el('alert-box-message')
+    var alertBox = el('alert-box'),
+        message  = el('alert-box-message'),
         okButton = el('alert-box-ok-button')
 
     showElem(alertBox)
