@@ -561,8 +561,7 @@ function hideElem(elem) {
 }
 
 function showElem(elem, display) {
-    if (display == null) { display = "block" }
-    elem.style.display = display
+    elem.style.display = display || "block"
 }
 
 var el = document.getElementById.bind(document)
@@ -595,8 +594,8 @@ function prettyPrompt(questionText, validator, nextAction) {
 
     okButton.onclick = function() {
         hideElem(validationError)
-        var val = input.value
-        res = validator(val)
+        var val = input.value,
+            res = validator(val)
 
         if (res.valid === true) {
             hideElem(promptBox)
